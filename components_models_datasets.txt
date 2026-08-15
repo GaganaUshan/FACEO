@@ -1,0 +1,38 @@
+LuxFace Analytics - Components, Models, and Datasets Overview
+=============================================================
+
+This document defines the four core components of the Human Authenticity Analyzer application, detailing the specific models and datasets utilized for each component.
+
+1. Cross-Cultural Emotion Detection
+-----------------------------------
+- Description: Real-time detection of 7 core emotions (Happy, Sad, Angry, Fear, Disgust, Surprise, Neutral) from webcam feeds.
+- Model Used: `@vladmandic/face-api` (Real-time emotion detection neural network)
+- Datasets Used for Training/Fine-Tuning:
+  * FER2013 (Facial Expression Recognition 2013)
+  * AffectNet
+  * RAF-DB (Real-world Affective Faces Database)
+
+2. Age & Gender Detection
+-------------------------
+- Description: Real-time estimation of user age and prediction of gender probabilities.
+- Model Used: `@vladmandic/face-api` (ageGenderNet lightweight model)
+- Datasets Used for Training/Fine-Tuning:
+  * IMDB-WIKI (Standard age/gender detection dataset)
+  * UTKFace (Large scale face dataset with age, gender, and ethnicity annotations)
+  * Adience (Unconstrained face dataset for age/gender classification)
+
+3. Deepfake Identification (Authenticity Analysis)
+--------------------------------------------------
+- Description: Lightweight background process evaluating facial authenticity to prevent presentation attacks and deepfakes within the first 10 seconds of analysis.
+- Model Used: Python backend with OpenCV and lightweight deep learning models (Options: MobileNetV2, EfficientNet-B0, or Compressed Xception)
+- Datasets Used for Training/Fine-Tuning:
+  * FaceForensics++ (Standard benchmark for deepfake detection)
+  * DeepFake Detection Challenge Dataset (DFDC)
+
+4. Skin Tone & Clearness Detection
+----------------------------------
+- Description: Evaluation of facial clearance, detecting blemishes and dark spots, alongside overall skin tone categorization.
+- Model Used: Backend image processing via OpenCV. Uses color space conversions (HSV) for tone classification, and texture algorithms (e.g., Laplacian Variance) for edge/blemish detection.
+- Datasets Used for Training/Fine-Tuning:
+  * Fitzpatrick17k (Skin tone classification)
+  * Diverse Dermatology Images (DDI) & ACNE04 (for skin blemishes/clearness analysis)
