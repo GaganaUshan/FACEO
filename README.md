@@ -15,15 +15,15 @@
 
 | Module | Description |
 |---|---|
-| 😄 **Emotion Detection** | Real-time 5-class emotion recognition (Angry, Happy, Sad, Neutral, Fear) |
-| 👤 **Age & Gender** | Age regression and gender classification from webcam or uploaded image |
-| 🔍 **Deepfake Detection** | Authenticity analysis using ELA (Error Level Analysis) + FFT frequency-domain spectral checks |
-| 🩺 **Skin Analysis** | Skin tone classification (HSV) and blemish/clearness detection (Laplacian variance) |
-| 🩹 **Bruise/Marks Detection** | Bounding-box detection of bruises, scars, and marks (OpenCV-based, YOLO-ready stub) |
+|  **Emotion Detection** | Real-time 5-class emotion recognition (Angry, Happy, Sad, Neutral, Fear) |
+|  **Age & Gender** | Age regression and gender classification from webcam or uploaded image |
+|  **Deepfake Detection** | Authenticity analysis using ELA (Error Level Analysis) + FFT frequency-domain spectral checks |
+|  **Skin Analysis** | Skin tone classification (HSV) and blemish/clearness detection (Laplacian variance) |
+|  **Bruise/Marks Detection** | Bounding-box detection of bruises, scars, and marks (OpenCV-based, YOLO-ready stub) |
 
 ---
 
-## 🏗️ Architecture Overview
+##  Architecture Overview
 
 ```
 Browser (face-api.js — TensorFlow.js)
@@ -42,7 +42,7 @@ See [`architecture.md`](./architecture.md) for the full system diagram and data-
 
 ---
 
-## 🗂️ Repository Structure
+##  Repository Structure
 
 ```
 human-authenticity-analyzer/
@@ -118,7 +118,7 @@ npm install
 
 ---
 
-## 🖥️ Running the Project
+##  Running the Project
 
 Open **6 separate terminal windows** and run one command in each.
 Replace `<PROJECT_ROOT>` with the full path to your cloned folder.
@@ -174,7 +174,7 @@ cd <PROJECT_ROOT>\frontend; npm run dev
 
 ---
 
-### ✅ Service Status Reference
+###  Service Status Reference
 
 | # | Service | Port | Ready When You See |
 |---|---|---|---|
@@ -192,7 +192,7 @@ Once all 6 services are running, open **[http://localhost:3000](http://localhost
 
 ---
 
-## 🧱 Tech Stack
+##  Tech Stack
 
 ### Frontend
 
@@ -220,7 +220,7 @@ Once all 6 services are running, open **[http://localhost:3000](http://localhost
 
 ---
 
-## 🤖 AI Models & Datasets
+##  AI Models & Datasets
 
 ### Client-side Models (loaded from `/frontend/public/models`)
 
@@ -243,7 +243,7 @@ Once all 6 services are running, open **[http://localhost:3000](http://localhost
 
 ---
 
-## 🔑 Key Architecture Patterns
+##  Key Architecture Patterns
 
 **Dual-Layer Face Detection**
 - Client-side gate (face-api.js) validates a face *before* any API call — eliminates wasted requests.
@@ -260,7 +260,7 @@ Once all 6 services are running, open **[http://localhost:3000](http://localhost
 
 ---
 
-## 👥 Team Collaboration Guide
+##  Team Collaboration Guide
 
 This repository is the **source of truth**. Recommended team workflow:
 
@@ -283,12 +283,5 @@ This repository is the **source of truth**. Recommended team workflow:
 
 > **Do not commit** `backend/venv/`, `frontend/node_modules/`, `frontend/.next/`, or any runtime-downloaded model files — these are gitignored.
 
----
 
-## 📄 License
-
-This project is intended for academic and research use. Refer to your team's agreed license terms.
-
----
-
-*Built with ❤️ by the FACEO team.*
+*Built by the FACEO team.*
