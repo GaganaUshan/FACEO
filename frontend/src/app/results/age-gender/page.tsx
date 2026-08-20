@@ -10,10 +10,15 @@ interface AgeGenderResult {
   age: number;
   gender: string;
   genderConfidence: number;
+  genderUncertain?: boolean;
+  facialHairBonus?: number;
+  race?: string;
   ageTrend?: number[];
   sessionType: string;
   duration?: number;
   uploadedImage?: string;
+  selectedModelNames?: string;
+  modelsUsed?: string[];
 }
 
 export default function AgeGenderResultsPage() {
@@ -57,7 +62,7 @@ export default function AgeGenderResultsPage() {
         <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="glass-panel p-10 max-w-lg mx-auto text-center flex flex-col items-center">
           <AlertCircle className="w-12 h-12 text-white/30 mb-6" />
           <h2 className="text-2xl font-light tracking-tight mb-4">No Session Data</h2>
-          <p className="text-white/50 font-light mb-8 text-sm">Please complete an age & gender analysis first.</p>
+          <p className="text-white/50 font-light mb-8 text-sm">Please complete an age &amp; gender analysis first.</p>
           <Link href="/age-gender" className="px-8 py-3 bg-white text-black rounded-full text-sm font-medium tracking-wide hover:scale-105 transition-transform">
             Start Analysis
           </Link>
@@ -67,13 +72,81 @@ export default function AgeGenderResultsPage() {
   }
 
   const trend = results.ageTrend || [results.age + 2, results.age + 1, results.age, results.age - 1, results.age, results.age, results.age];
+  const isSouthAsian = results.race === "indian";
+  const beardDetected = (results.facialHairBonus ?? 0) > 10;
+  const showGenderWarning = results.genderUncertain;
 
   return (
     <ResultLayout title="Age & Gender Results" sessionId="FCO-AGE-2026" backHref="/age-gender" backLabel="New Analysis">
+
+      {/* ── Bias correction notice ── */}
+      {isSouthAsian && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-6 px-4 py-3 rounded-xl border border-indigo-500/30 bg-indigo-500/10 flex items-start gap-3"
+        >
+          <span className="text-indigo-400 text-base mt-0.5">🌏</span>
+          <div>
+            <p className="text-[11px] text-indigo-300 font-semibold uppercase tracking-widest mb-0.5">
+              South Asian Calibration Applied
+            </p>
+            <p className="text-[10px] text-indigo-200/60 leading-snug">
+              Age is adjusted −7 yrs to correct for the systematic overestimation that VGG-Face &amp; FaceNet exhibit on South Asian (Indian / Sri Lankan) faces trained on predominantly Western datasets.
+            </p>
+          </div>
+        </motion.div>
+      )}
+
+      {/* ── Beard detected notice ── */}
+      {beardDetected && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-6 px-4 py-3 rounded-xl border border-teal-500/30 bg-teal-500/10 flex items-start gap-3"
+        >
+          <span className="text-teal-400 text-base mt-0.5">✦</span>
+          <div>
+            <p className="text-[11px] text-teal-300 font-semibold uppercase tracking-widest mb-0.5">
+              Facial Hair Signal Detected
+            </p>
+            <p className="text-[10px] text-teal-200/60 leading-snug">
+              Lower-face texture analysis detected beard/stubble (score +{results.facialHairBonus}). This has been added to the male confidence score to counteract hair-length bias.
+            </p>
+          </div>
+        </motion.div>
+      )}
+
+      {/* ── Gender uncertainty warning ── */}
+      {showGenderWarning && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-6 px-4 py-3 rounded-xl border border-amber-500/30 bg-amber-500/10 flex items-start gap-3"
+        >
+          <span className="text-amber-400 text-base mt-0.5">⚠</span>
+          <div>
+            <p className="text-[11px] text-amber-300 font-semibold uppercase tracking-widest mb-0.5">
+              Low Gender Confidence
+            </p>
+            <p className="text-[10px] text-amber-200/60 leading-snug">
+              Models disagreed on gender classification — possibly due to hair style. Try deselecting <span className="font-mono">AgeGenderNet</span> (most hair-biased) and using only the 3 server-side DeepFace models.
+            </p>
+          </div>
+        </motion.div>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
         {/* Age Card */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-8">
-          <h3 className="text-xs uppercase tracking-[0.2em] text-white/40 mb-6 font-bold">Estimated Age</h3>
+          <h3 className="text-xs uppercase tracking-[0.2em] text-white/40 mb-6 font-bold flex items-center gap-2">
+            Estimated Age
+            {isSouthAsian && (
+              <span className="text-[9px] px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 font-mono normal-case tracking-normal">
+                Calibrated
+              </span>
+            )}
+          </h3>
           <div className="flex items-end gap-3 mb-4">
             <span className="text-6xl font-light">{results.age}</span>
             <span className="text-white/30 text-xs pb-2 uppercase tracking-widest">Years</span>
@@ -81,24 +154,50 @@ export default function AgeGenderResultsPage() {
           <p className="text-white/40 text-[10px] uppercase tracking-widest">
             Range: {results.age - 2} — {results.age + 2}
           </p>
+          {isSouthAsian && (
+            <p className="text-indigo-300/50 text-[9px] mt-2 font-mono">
+              South Asian bias −7 yrs applied
+            </p>
+          )}
         </motion.div>
 
         {/* Gender Card */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="glass-card p-8">
-          <h3 className="text-xs uppercase tracking-[0.2em] text-white/40 mb-6 font-bold">Gender Identification</h3>
+          <h3 className="text-xs uppercase tracking-[0.2em] text-white/40 mb-6 font-bold flex items-center gap-2">
+            Gender
+            {showGenderWarning && (
+              <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 font-mono normal-case tracking-normal">
+                Uncertain
+              </span>
+            )}
+            {beardDetected && !showGenderWarning && (
+              <span className="text-[9px] px-1.5 py-0.5 rounded bg-teal-500/20 text-teal-300 border border-teal-500/30 font-mono normal-case tracking-normal">
+                +Beard
+              </span>
+            )}
+          </h3>
           <div className="flex items-center justify-between mb-4">
             <span className="text-4xl font-light capitalize">{results.gender}</span>
-            <span className="text-white/70 font-mono bg-white/5 px-3 py-1.5 rounded text-sm">{results.genderConfidence}%</span>
+            <span className={`font-mono px-3 py-1.5 rounded text-sm ${
+              showGenderWarning
+                ? "bg-amber-500/10 text-amber-300 border border-amber-500/20"
+                : "bg-white/5 text-white/70"
+            }`}>
+              {results.genderConfidence}%
+            </span>
           </div>
           <div className="w-full h-[2px] bg-white/10 rounded-full overflow-hidden">
-            <div className="h-full bg-white/60" style={{ width: `${results.genderConfidence}%` }} />
+            <div
+              className={`h-full rounded-full ${showGenderWarning ? "bg-amber-400/60" : "bg-white/60"}`}
+              style={{ width: `${results.genderConfidence}%` }}
+            />
           </div>
         </motion.div>
 
         {/* Session Info */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="glass-card p-8">
           <h3 className="text-xs uppercase tracking-[0.2em] text-white/40 mb-6 font-bold">Session Info</h3>
-          <div className="space-y-4">
+          <div className="space-y-3">
             <div>
               <p className="text-[10px] uppercase tracking-widest text-white/30 mb-1">Mode</p>
               <p className="text-lg font-light capitalize">{results.sessionType}</p>
@@ -107,6 +206,18 @@ export default function AgeGenderResultsPage() {
               <div>
                 <p className="text-[10px] uppercase tracking-widest text-white/30 mb-1">Duration</p>
                 <p className="text-lg font-light">{Math.round(results.duration / 60)} min</p>
+              </div>
+            )}
+            {results.race && (
+              <div>
+                <p className="text-[10px] uppercase tracking-widest text-white/30 mb-1">Detected Ethnicity</p>
+                <p className="text-sm font-light capitalize text-white/70">{results.race}</p>
+              </div>
+            )}
+            {results.selectedModelNames && (
+              <div>
+                <p className="text-[10px] uppercase tracking-widest text-white/30 mb-1">Models Used</p>
+                <p className="text-[11px] font-mono text-white/50 leading-relaxed">{results.selectedModelNames}</p>
               </div>
             )}
           </div>
