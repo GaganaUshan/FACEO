@@ -48,7 +48,7 @@ export default function EmotionSelectionPage() {
             >
               {/* Darkened Low-Opacity Image */}
               <Image
-                src="/emoOne.png"
+                src="/emotion.png"
                 alt="Emotion Recognition Part"
                 fill
                 priority
@@ -96,7 +96,7 @@ export default function EmotionSelectionPage() {
             >
               {/* Darkened Low-Opacity Image */}
               <Image
-                src="/emoTwo.png"
+                src="/lowLight.png"
                 alt="Low Light Condition Part"
                 fill
                 priority
