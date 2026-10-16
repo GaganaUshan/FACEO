@@ -1020,7 +1020,7 @@ export default function AllInOneClient() {
               <div className="space-y-2">
                 {liveDetections.map((d, i) => (
                   <div
-                    key={i}
+                    key={`live-det-${d.label}-${i}`}
                     className="flex justify-between items-center text-xs py-1 border-b border-white/5"
                   >
                     <span className="text-white/70">{d.label}</span>

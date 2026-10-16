@@ -561,12 +561,12 @@ export default function AllInOneResultsPage() {
               Categories Found
             </p>
             <div className="flex flex-wrap gap-2 mt-2">
-              {results.faceMarks.detections.map((d) => (
+              {Array.from(new Set(results.faceMarks.detections.map((d) => d.label))).map((cat) => (
                 <span
-                  key={d.label}
+                  key={cat}
                   className="text-[10px] bg-white/5 border border-white/10 px-3 py-1 rounded-full text-white/50 uppercase tracking-widest"
                 >
-                  {d.label}
+                  {cat}
                 </span>
               ))}
             </div>
@@ -591,7 +591,7 @@ export default function AllInOneResultsPage() {
           <div className="space-y-6">
             {results.faceMarks.detections.map((det, i) => (
               <div
-                key={i}
+                key={`mark-item-${det.label}-${i}`}
                 className="border border-white/5 bg-white/[0.02] rounded-xl p-5"
               >
                 <div className="flex items-center justify-between mb-3">
