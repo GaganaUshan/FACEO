@@ -6,4 +6,6 @@ numpy<2
 torch
 torchvision
 Pillow
+tensorflow-cpu
 mtcnn
+
